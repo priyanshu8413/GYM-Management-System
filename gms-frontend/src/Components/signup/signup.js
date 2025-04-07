@@ -5,6 +5,7 @@ import ForgotPassword from "../ForgotPassword/forgotpassword";
 import axios from "axios";
 import Stack from "@mui/material/Stack";
 import LinearProgress from "@mui/material/LinearProgress";
+import { ToastContainer,toast } from 'react-toastify';
 
 const Signup = () => {
   const [forgotPassword, setForgotPassword] = useState(false);
@@ -23,7 +24,7 @@ const Signup = () => {
   const handleOnchange = (event, name) => {
     setInputField({ ...inputField, [name]: event.target.value });
   };
-  console.log(inputField);
+  
   const uploadImage = async (event) => {
     setLoaderImage(true)
     console.log("Image Uploading");
@@ -47,6 +48,19 @@ const Signup = () => {
       setLoaderImage(false)
     }
   };
+  const handleRegister = async()=>{
+    await axios.post("http://localhost:4000/auth/register",inputField).then((resp)=>{
+     // console.log(resp)
+     const succeessMsg=resp.data.message;
+     toast.success(succeessMsg)
+    }).catch(err=>{
+         const errorMessage=err.response.data.error
+        //console.log(errorMessage)
+        toast.error(errorMessage)
+       })
+    
+}
+
 
   return (
     <div className=" customSignup w-1/3 p-10 mt-20 ml-20 bg-gray-50 bg-opacity-50 h-[450px] overflow-y-auto">
@@ -104,7 +118,7 @@ const Signup = () => {
       }
       <img src={inputField.profilePic} className="mb-10 h-[200px] w-[250px] " />
 
-      <div className="p-2 w-[80%] border-2 bg-slate-800 mx-auto rounded-lg text-white text-center text-lg hover:bg-white hover:text-black font-semibold  cursor-pointer">
+      <div className="p-2 w-[80%] border-2 bg-slate-800 mx-auto rounded-lg text-white text-center text-lg hover:bg-white hover:text-black font-semibold  cursor-pointer" onClick={()=>handleRegister()}>
         Register
       </div>
       <div
@@ -120,6 +134,7 @@ const Signup = () => {
           content={<ForgotPassword />}
         />
       )}
+      <ToastContainer/>
     </div>
   );
 };

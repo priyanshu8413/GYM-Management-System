@@ -8,20 +8,21 @@ import {useState,useEffect} from 'react'
 import Member from './Pages/Member/member';
 import GeneralUser from './Pages/GeneralUser/generalUser';
 import MemberDetail from './Pages/MemberDetail/memberDetail';
+import 'react-toastify/dist/ReactToastify.css';
 function App() {
   const navigate = useNavigate();
   const [isLogin, setIsLogin] = useState(false)
   useEffect(()=>{
-    let isLogedIn = sessionStorage.getItem("isLogin");
+    let isLogedIn = localStorage.getItem("isLogin");
     if(isLogedIn){
       setIsLogin(true);
-     // navigate('/dashboard')
+     navigate('/dashboard')
       
     }else{
       setIsLogin(false)
       navigate('/')
     }
-  },[sessionStorage.getItem("isLogin")])
+  },[localStorage.getItem("isLogin")])
   return (
     <div className="flex">
      {

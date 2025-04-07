@@ -27,15 +27,15 @@ const Sidebar = () => {
       greetingMessage()
    },[])
    const handleLogout=async()=>{
-     sessionStorage.clear();
+     localStorage.clear();
      navigate(' / ')
    }
   return (
     <div className='w-1/4 h-[100vh] border-2 bg-black text-white p-5 font-extralight'>
-     <div className='text-center text-3xl'> Power Zone</div>
+     <div className='text-center text-3xl'>{localStorage.getItem('gymName')} </div>
      <div className='flex gap-5 my-5'>
         <div className='w-[100px] h-[100px] rounded-lg'>
-            <img alt= 'gym-pic'className= 'w-full h-full rounded-full' src="https://tse2.mm.bing.net/th?id=OIP.Fl3tu-RyjWc3wpUhchgOVAHaE6&pid=Api&P=0&h=180"  />
+            <img alt= 'gym-pic'className= 'w-full h-full rounded-full' src={localStorage.getItem('gymPic')}  />
         </div>
         <div className='text-xl '>
           {greeting}

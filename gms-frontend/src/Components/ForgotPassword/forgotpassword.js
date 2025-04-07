@@ -1,21 +1,72 @@
 import React , {useState} from 'react'
+import Loader from '../Loader/loader'
+import axios from 'axios'
+import { ToastContainer,toast } from 'react-toastify'
 
 const ForgotPassword = () => {
     const [emailSubmit, setEmailSubmit] = useState(false)
     const [otpValidate,setOtpValidate] = useState(false);
-   // const [loader,setLoader] = useState(false)
+    const [loader,setLoader] = useState(false)
     const [contentVal,setContentValue] = useState("Submit Your Email")
 
     const [inputField, setInputField] = useState({ email: "", otp: "", newPassword: "" });
     const handleSubmit = () => {
         if (!emailSubmit) {
-              setEmailSubmit(true)
-              setContentValue("Submit Your OTP")
+              sendOtp();
+
         }
         else if(emailSubmit && !otpValidate){
-            setOtpValidate(true)
-            setContentValue("Submit Your New Password")
+            
+            verifyOTP();
         }
+        else{
+          changePassword();
+        }
+    }
+    const changePassword = async()=>{
+      setLoader(true)
+      await axios.post("http://localhost:4000/auth/reset-password",{email:inputField.email,newPassword:inputField.newPassword}).then((response)=>{
+        toast.success(response.data.message)
+        setLoader(false)
+
+      }).catch(err=>{
+        toast.error("Some technical issue while sending mail. Please Try Again  ")
+        console.log(err)
+        setLoader(false)
+      })
+     
+  }
+
+
+    const verifyOTP = async()=>{
+      setLoader(true);
+      await axios.post("http://localhost:4000/auth/reset-password/checkOtp",{email:inputField.email,otp:inputField.otp}).then((response)=>{
+        setOtpValidate(true)
+        setContentValue("Submit Your New Password")
+        toast.success(response.data.message)
+        setLoader(false)
+
+
+      }).catch(err=>{
+        toast.error("Some technical issue while sending mail. Please Try Again  ")
+        console.log(err)
+        setLoader(false)
+      })
+  }
+
+    const sendOtp = async()=>{
+      setLoader(true);
+      await axios.post("http://localhost:4000/auth/reset-password/sendOtp",{email:inputField.email}).then((response)=>{
+         setEmailSubmit(true)
+         setContentValue("Submit Your OTP")
+         toast.success(response.data.message)
+         setLoader(false)
+
+      }).catch(err=>{
+        toast.error("Some technical issue while sending mail. Please Try Again  ")
+        console.log(err)
+        setLoader(false)
+      })
     }
     const handleOnChange=(event,name)=>{
       setInputField({...inputField,[name]:event.target.value})
@@ -62,7 +113,8 @@ const ForgotPassword = () => {
       </div>
       }
       <div className='bg-slate-800 text-white mx-auto w-2/3 p-3  rounded-lg text-center font-semibold cursor-pointer border-2 hover:bg-white hover:text-black' onClick={() => handleSubmit()}>{contentVal}</div>
-
+      {loader && <Loader />}
+      <ToastContainer/>
    </div>
   )
 }
